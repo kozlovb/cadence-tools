@@ -25,25 +25,25 @@ import (
 
 func DetectCapabilityType(typeToCheck ast.Type) bool {
 	const capabilityTypeName = "Capability"
-	switch upcastedType := typeToCheck.(type) {
+	switch downcastedType := typeToCheck.(type) {
 	case *ast.NominalType:
-		return upcastedType.Identifier.Identifier == capabilityTypeName
+		return downcastedType.Identifier.Identifier == capabilityTypeName
 	case *ast.OptionalType:
-		return DetectCapabilityType(upcastedType.Type)
+		return DetectCapabilityType(downcastedType.Type)
 	case *ast.VariableSizedType:
-		return DetectCapabilityType(upcastedType.Type)
+		return DetectCapabilityType(downcastedType.Type)
 	case *ast.ConstantSizedType:
-		return DetectCapabilityType(upcastedType.Type)
+		return DetectCapabilityType(downcastedType.Type)
 	case *ast.DictionaryType:
-		return DetectCapabilityType(upcastedType.KeyType) || DetectCapabilityType(upcastedType.ValueType)
+		return DetectCapabilityType(downcastedType.KeyType) || DetectCapabilityType(downcastedType.ValueType)
 	case *ast.FunctionType:
 		return false
 	case *ast.ReferenceType:
-		return DetectCapabilityType(upcastedType.Type)
+		return DetectCapabilityType(downcastedType.Type)
 	case *ast.RestrictedType:
 		return false
 	case *ast.InstantiationType:
-		return DetectCapabilityType(upcastedType.Type)
+		return DetectCapabilityType(downcastedType.Type)
 	default:
 		panic("Unknown type")
 	}
